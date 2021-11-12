@@ -1,32 +1,26 @@
-import requests
-import time
+import requests, time
 req = requests.Session()
 
 lst = []
-
 start = 'item_details = {'
 end = '};'
+
 print('The threshold refers to the percentage. With an input of example "20", if the price goes under 20% of the rap, it will tell you in discord')
 threshold = int(input('Do not include any letters. Enter threshold: '))
 threshold = threshold / 100
 threshold = 1 - threshold
-print(threshold)
 
-webhook = 'webhook here'
+webhook = input('Enter discord webhook: ')
 
 def deals():
-    r = req.get('https://www.rolimons.com/deals').text
-    r = r.split(start)[1]
-    r = r.split(end)[0]
-    r = r.replace('],"', '\n"')
-    r = r.splitlines()
+    r = req.get('https://www.rolimons.com/deals').text.split(start)[1].split(end)[0].replace('],"', '\n"').splitlines()
     for line in r:
         try:
             t = line.replace('"', '').replace(':[', ',').split(',')
             assetid, assetname, price, rap, projected = t[0], t[1], t[2], t[3], t[5]
             number = float(price) / float(rap)
             s = f'{assetid}:{number}'
-            if float(number) <= float(threshold) and number != 0.0 and s not in lst:
+            if float(number) <= float(threshold) and number != 0.0 and not s in lst and projected != '1':
                 lst.append(s)
                 print(f'{assetid} - {assetname} - {price} - {rap} - {projected}')
                 data = {
