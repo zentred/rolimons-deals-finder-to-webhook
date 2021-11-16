@@ -14,6 +14,7 @@ webhook = input('Enter webhook: ')
 discord_id = input('Enter discord ID: ')
 
 def deals():
+    # different for each amount of commas because since im splitting by the comma format fucks up if its in the actual limited name
     r = req.get('https://www.rolimons.com/deals', timeout=4).text.split('item_details = {')[1].split('};')[0].replace('],"', '\n"').splitlines()
     for line in r:
         try:
